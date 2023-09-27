@@ -2,12 +2,14 @@
 @section('contents')
 <div class="container">
     <div class="row">
+       
         <div class="col-sm-12 mt-4">
             <div class="card">
                 @if(Session::has('status'))
                 <span class="alert alert-success">{{Session::get('status')}}</span>
            @endif
                 <div class="card-header ">
+                   
                     <h4>Contact List -Total: {{$count_item}}
                     <a class="btn btn-primary float-end" href="{{route('add-contact')}}">Add Contact</a></h4>
                    

@@ -1,0 +1,63 @@
+<template>
+  <div>
+    <!-- Your Vue component template goes here -->
+    <button @click="startFCM">Request FCM Token</button>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      firebaseConfig: {
+        // Your Firebase configuration object
+        apiKey: "...",
+        authDomain: "...",
+        databaseURL: "...",
+        projectId: "...",
+        storageBucket: "...",
+        messagingSenderId: "...",
+        appId: "...",
+        measurementId: "...",
+      },
+    };
+  },
+  methods: {
+    startFCM() {
+      const messaging = firebase.initializeApp(this.firebaseConfig).messaging();
+
+      messaging
+        .requestPermission()
+        .then(() => messaging.getToken())
+        .then((response) => {
+          this.$http
+            .post("{{ route('store.token') }}", {
+              token: response,
+            })
+            .then(() => {
+              alert("Token stored.");
+            })
+            .catch((error) => {
+              alert(error);
+            });
+        })
+        .catch((error) => {
+          alert(error);
+        });
+
+      messaging.onMessage((payload) => {
+        const title = payload.notification.title;
+        const options = {
+          body: payload.notification.body,
+          icon: payload.notification.icon,
+        };
+        new Notification(title, options);
+      });
+    },
+  },
+};
+</script>
+
+<style scoped>
+/* Your component-specific styles go here */
+</style>
